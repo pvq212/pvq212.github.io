@@ -86,7 +86,7 @@ theme_mode: dark
 #
 # e.g. 'https://cdn.com'
 # img_cdn: "https://chirpy-img.netlify.app"
-img_cdn: "https://filedn.com/lqiBiGt86f5y3ebelb54JG"
+img_cdn: "https://filedn.com/lqiBiGt86f5y3ebelb54JGS"
 # the avatar on sidebar, support local or CORS resources
 avatar: "/blog/avatar.png"
 

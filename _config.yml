@@ -110,8 +110,8 @@ comments:
     issue_term: pathname
   # Giscus options › https://giscus.app
   giscus:
-    repo: # <gh-username>/<repo>
-    repo_id:
+    repo: pvq212/pvq212.github.io
+    repo_id: 769268565
     category:
     category_id:
     mapping: # optional, default to 'pathname'

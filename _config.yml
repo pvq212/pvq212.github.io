@@ -106,14 +106,14 @@ comments:
     shortname: # fill with the Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
   # utterances settings › https://utteranc.es/
   utterances:
-    repo: "pvq212/pvq212.github.io"
-    issue_term: "pathname"
+    repo:
+    issue_term:
   # Giscus options › https://giscus.app
   giscus:
     repo: "pvq212/pvq212.github.io"
     repo_id: "R_kgDOLdobVQ"
-    category: "Announcements"
-    category_id: "DIC_kwDOLdobVc4Cd1BO"
+    category: "Comments"
+    category_id: "DIC_kwDOLdobVc4Cd1Em"
     mapping: # optional, default to 'pathname'
     input_position: # optional, default to 'bottom'
     lang: # optional, default to the value of `site.lang`

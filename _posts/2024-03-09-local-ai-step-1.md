@@ -94,6 +94,7 @@ docker-compose logs -f
 ### 下載模型(選用)
 
 我們找到 Mistral 的[**ft 模型**][Mistral-huggingface]，可以看到介紹模型依照輕量到重型依序排序下來，我們要自己依照硬體資源去取捨
+
 ![alt text](/blog/mistral-models.png)
 
 這邊選擇 `mistral-ft-optimized-1218.Q4_K_M.gguf` 這個 model，進入 models 資料夾後，執行以下指令去下載

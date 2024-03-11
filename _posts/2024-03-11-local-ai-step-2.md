@@ -54,7 +54,7 @@ docker-compose restart
 接下來就要執行安裝模型以及測試 api 的階段，我們直接打下面的 api
 
 ```bash
-curl --location 'http://220.135.173.168:8080/v1/images/generations' \
+curl --location 'http://127.0.0.1:8080/v1/images/generations' \
 --header 'Content-Type: application/json' \
 --data '{
     "prompt": "A white Gundam robot, over 20 meters tall, standing on the ruins of a city with burning buildings and smoky sky in the background. High-quality image of a majestic white Gundam towering over a post-apocalyptic cityscape, showcasing intricate details and dramatic composition. Perfect for fans of mecha and sci-fi art, this artwork captures the essence of futuristic warfare | cartoon, 3d, ((disfigured)), ((bad art)), ((deformed)),((extra limbs)),((close up)),((b&w)), wierd colors, blurry, (((duplicate))), ((morbid)), ((mutilated)), [out of frame], extra fingers, mutated hands, ((poorly drawn hands)), ((poorly drawn face)), (((mutation))), (((deformed))), ((ugly)), blurry, ((bad anatomy)), (((bad proportions))), ((extra limbs)), cloned face, (((disfigured))), out of frame, ugly, extra limbs, (bad anatomy), gross proportions, (malformed limbs), ((missing arms)), ((missing legs)), (((extra arms))), (((extra legs))), mutated hands, (fused fingers), (too many fingers), (((long neck))), Photoshop, video game, ugly, tiling, poorly drawn hands, poorly drawn feet, poorly drawn face, out of frame, mutation, mutated, extra limbs, extra legs, extra arms, disfigured, deformed, cross-eye, body out of frame, blurry, bad art, bad anatomy, 3d rende",

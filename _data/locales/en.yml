@@ -30,9 +30,9 @@ panel:
 copyright:
   # Shown at the bottom of the post
   license:
-    template: This post is licensed under :LICENSE_NAME by the author.
-    name: CC BY 4.0
-    link: https://creativecommons.org/licenses/by/4.0/
+    template: 如果你覺得此文章對你有幫助的話，可以請我:LICENSE_NAME
+    name: 喝杯咖啡
+    link: /about
 
   # Displayed in the footer
   brief: Some rights reserved.

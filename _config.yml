@@ -86,9 +86,9 @@ theme_mode: dark
 #
 # e.g. 'https://cdn.com'
 # img_cdn: "https://chirpy-img.netlify.app"
-img_cdn: "https://r2.learntw.com"
+img_cdn: "/assets/blog"
 # the avatar on sidebar, support local or CORS resources
-avatar: "/blog/avatar.jpg"
+avatar: "/avatar.jpg"
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.

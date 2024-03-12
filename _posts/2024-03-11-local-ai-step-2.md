@@ -5,7 +5,7 @@ date: 2024-03-11 00:30:00 +0800
 categories: [AI, LocalAI]
 tags: [Docker, AI, LocalAI, Stable diffusion, 文字生成圖片]
 image:
-  path: /blog/local-ai-step-2/dog2.png
+  path: /local-ai-step-2/dog2.png
 ---
 
 ## 文字生成圖片
@@ -72,7 +72,7 @@ curl --location 'http://127.0.0.1:8080/v1/images/generations' \
 
 以上面的提示詞經過我的 N100 約 50 秒的生成後，產出了這些結果
 
-![alt text](/blog/local-ai-step-2/gundam.png)
+![alt text](/local-ai-step-2/gundam.png)
 
 `大樓背景以及煙霧等細節都還挺不錯`
 
@@ -80,14 +80,14 @@ curl --location 'http://127.0.0.1:8080/v1/images/generations' \
 > A white Gundam robot, over 20 meters tall, standing on the ruins of a city with burning buildings and smoky sky in the background. High-quality image of a majestic white Gundam towering over a post-apocalyptic cityscape, showcasing intricate details and dramatic composition. Perfect for fans of mecha and sci-fi art, this artwork captures the essence of futuristic warfare | cartoon, 3d, ((disfigured)), ((bad art)), ((deformed)),((extra limbs)),((close up)),((b&w)), wierd colors, blurry, (((duplicate))), ((morbid)), ((mutilated)), [out of frame], extra fingers, mutated hands, ((poorly drawn hands)), ((poorly drawn face)), (((mutation))), (((deformed))), ((ugly)), blurry, ((bad anatomy)), (((bad proportions))), ((extra limbs)), cloned face, (((disfigured))), out of frame, ugly, extra limbs, (bad anatomy), gross proportions, (malformed limbs), ((missing arms)), ((missing legs)), (((extra arms))), (((extra legs))), mutated hands, (fused fingers), (too many fingers), (((long neck))), Photoshop, video game, ugly, tiling, poorly drawn hands, poorly drawn feet, poorly drawn face, out of frame, mutation, mutated, extra limbs, extra legs, extra arms, disfigured, deformed, cross-eye, body out of frame, blurry, bad art, bad anatomy, 3d rende
 
 
-![alt text](/blog/local-ai-step-2/dog1.png)
+![alt text](/local-ai-step-2/dog1.png)
 
 `也會自動優化景深效果，強調物體本身`
 
 #### prompt
 > A chubby and adorable Husky with big black spots on its fluffy body, happily smiling with bright eyes, cute and short limbs, standing on green grass. High-quality photo of a plump and lovable Husky dog, showcasing its unique markings and joyful expression. Perfect for pet lovers and animal enthusiasts, this image captures the essence of cuteness and happiness | skinny, ugly, ((angry)), ((scary)), ((scars)), ((injuries)), ((missing limbs)), ((mutilated)), (extra eyes), (extra ears), (extra nose), (extra mouth), (disproportionate body), (unattractive markings), (poorly groomed), (unhealthy), (unhappy), (unnatural posture), (unnatural smile), (aggressive pose), (unpleasant expression), (demonic), (pixelated), (low resolution), (bad lighting), (blurry), (bad composition), (out of focus), (unnatural colors)
 
-![alt text](/blog/local-ai-step-2/dog2.png)
+![alt text](/local-ai-step-2/dog2.png)
 
 `水波的效果雖然不夠真實，但對於 step 只有一次的生成，效果算是很不錯了`
 

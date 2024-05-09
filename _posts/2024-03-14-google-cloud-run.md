@@ -1,6 +1,6 @@
 ---
 title: Google Cloud Run，自動調整擴容的實例
-author: doggy
+author: Cooper
 date: 2024-03-14 00:30:00 +0800
 categories: [Server]
 tags: [k8s, GCP, Go, ddos]

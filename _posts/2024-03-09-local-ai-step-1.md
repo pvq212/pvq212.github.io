@@ -1,6 +1,6 @@
 ---
 title: 自建 LocalAI，本地使用 ai 模型 - 聊天機器人
-author: doggy
+author: Cooper
 date: 2024-03-09 00:30:00 +0800
 categories: [AI, LocalAI]
 tags: [Docker, AI, LocalAI, GPT]

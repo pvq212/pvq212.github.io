@@ -1,6 +1,6 @@
 ---
 title: 自建 LocalAI，本地使用 ai 模型 - 文字生成圖片
-author: doggy
+author: Cooper
 date: 2024-03-11 00:30:00 +0800
 categories: [AI, LocalAI]
 tags: [Docker, AI, LocalAI, Stable diffusion, 文字生成圖片]

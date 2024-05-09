@@ -1,6 +1,6 @@
 ---
 title: Modsecurity with CRS，開源的 WAF 防火牆
-author: doggy
+author: Cooper
 date: 2024-04-09 00:30:00 +0800
 categories: [Server]
 tags: [WAF, DevOps]

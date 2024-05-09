@@ -8,8 +8,7 @@ tags: [WAF, DevOps]
 
 ## 前言
 
-`ModSecurity`、又稱 `Modsec`，原本是作為 `Apache HTTP Server` 的其中一個模組，後來自己發展為獨立形式的防火牆
-結合 `OWASP` 定期會更新的漏洞規則，可以達成應用的基本防火牆，但要注意的是 `ModSecurity` 的性能不算好，所以建議要做其他進階設定，可以考慮透過外部 WAF 來處理
+`ModSecurity`、又稱 `Modsec`，原本是作為 `Apache HTTP Server` 的其中一個模組，後來自己發展為獨立形式的防火牆，結合 `OWASP` 定期會更新的漏洞規則 `CRS`，可以達成 Web 應用的基本防務，但要注意的是 `ModSecurity` 的性能不算好，所以建議要做其他進階設定，可以考慮透過外部 WAF 來處理
 
 ## 部屬
 

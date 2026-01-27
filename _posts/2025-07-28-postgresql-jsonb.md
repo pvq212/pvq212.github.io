@@ -1,7 +1,7 @@
 ---
 title: PostgreSQL JSONB，當關聯式資料庫遇上文件儲存
 author: Cooper
-date: 2026-01-28 00:30:00 +0800
+date: 2025-07-28 00:30:00 +0800
 categories: [Database]
 tags: [postgresql, jsonb, nosql]
 image:

@@ -1,7 +1,7 @@
 ---
 title: Claude Code Skills 與 MCP，擴展 AI 能力的兩種方式
 author: Cooper
-date: 2026-01-28 11:00:00 +0800
+date: 2026-01-20 11:00:00 +0800
 categories: [AI Tools]
 tags: [ai, claude, mcp, skills, anthropic]
 image:

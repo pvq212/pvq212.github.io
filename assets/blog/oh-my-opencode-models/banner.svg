@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g2)" rx="36" />
+  <text x="88" y="200" fill="#f5f3ff" font-size="62" font-family="Arial, sans-serif" font-weight="700">模型怎麼分工</text>
+  <text x="88" y="286" fill="#e9d5ff" font-size="34" font-family="Arial, sans-serif">從 oh-my-opencode / oh-my-openagent 的代理設定來看</text>
+  <text x="88" y="408" fill="#ddd6fe" font-size="30" font-family="Arial, sans-serif">GPT・Claude・Gemini・MiniMax・GLM</text>
+  <text x="88" y="462" fill="#c4b5fd" font-size="24" font-family="Arial, sans-serif">不是選王者，是安排位置</text>
+</svg>

@@ -1,121 +1,186 @@
 ---
-title: Claude Code Skills 與 MCP，擴展 AI 能力的兩種方式
+title: Claude Code Skills 與 MCP，差在哪裡？我現在會怎麼分
 author: Cooper
 date: 2026-01-20 11:00:00 +0800
 categories: [AI Tools]
-tags: [ai, claude, mcp, skills, anthropic]
+tags: [ai, claude, mcp, skills, anthropic, claude-code]
 image:
   path: /claude-code-skills/banner.jpg
 ---
 
-最近這段時間，Claude Code 簡直成了開發者圈子裡的當紅炸子雞。作為 Anthropic 推出的命令行工具，它不僅能寫代碼，還能直接在你的終端裡執行指令、運行測試，甚至幫你修復 Bug。不過，用久了你可能會發現，雖然 Claude 本身很聰明，但有時候它還是會顯得有些「手短」，比如它不知道你公司的特定代碼規範，或者沒辦法直接讀取你 Slack 裡的訊息。
+## 前言
 
-為了讓 Claude 變得更強大，我們有兩種主要的擴展方式：**Skills** 和 **MCP (Model Context Protocol)**。這兩者雖然都能增強 Claude 的能力，但背後的邏輯和適用場景卻大不相同。今天我就來跟大家聊聊這兩者的差異，以及在什麼情況下該選哪一個。
+`Claude Code` 這一年真的很紅，紅到很多原本不太碰 CLI agent 的人，也開始想試看看。
 
-## Skills 是什麼？
+但我後來發現，新手最常卡住的地方不是安裝，而是這一句：
 
-簡單來說，Skills 就是一堆 Markdown 格式的指令文件。如果你用過一些 AI Agent 框架，你可以把它想像成是一種「領域知識注入」。
+> Skills 跟 MCP 到底差在哪？
 
-在 Claude Code 中，Skills 通常存放在 `~/.claude/skills/` 或者專案根目錄下的 `.claude/skills/` 文件夾裡。當你啟動 Claude Code 時，它會自動讀取這些 Markdown 文件，並將其中的內容作為系統提示詞（System Prompt）的一部分。
+這兩個東西看起來都像在幫 Claude 長出新能力，可是真的用起來，差滿多的。我一開始也有點把它們混在一起，後來才慢慢分清楚：一個比較像是在教它照你的習慣做事，另一個是真的把外部工具接進來。
 
-### Skills 的運作機制
+對小白來說，重點不是背定義，而是你現在卡的是哪種問題。你只是想讓它做事比較穩？還是你真的要它去碰 GitHub、資料庫、瀏覽器？這兩種需求，走的路完全不同。
 
-Skills 並不是真正的「代碼」，它更像是給 Claude 的「操作手冊」。例如，你可以寫一個關於 Git 操作的 Skill，告訴 Claude 在提交代碼時必須遵循 Conventional Commits 規範，並且在 commit 之前要先跑一遍測試。
+## 最短版本其實就兩句
 
-```markdown
-# git-master Skill
+- **Skills**：比較像「教它照某種方式做事」
+- **MCP**：比較像「真的給它一隻外接的手」
 
-你是一個 Git 專家。在執行任何 Git 操作之前，請確保：
-1. 檢查當前分支狀態。
-2. 提交訊息必須符合 `type(scope): description` 格式。
-3. 如果是修復 Bug，必須引用相關的 Issue 編號。
-```
+如果你只是想規範它的做事流程、口氣、專案習慣，大多數情況下先從 `Skills` 開始就夠了。
 
-當 Claude 讀到這個 Skill 後，它在處理 Git 相關任務時就會自動遵守這些規則。
+如果你是要讓它去碰外部世界，例如 GitHub、Slack、資料庫、設計稿、雲端服務，那才輪到 `MCP` 上場。[1][2]
 
-{: .prompt-info }
-Skills 的優勢在於它非常輕量。你不需要寫任何 Python 或 Node.js 代碼，只需要寫好 Markdown 說明文件，Claude 就能理解並執行。
+## Claude Code 本體其實已經很夠用了
 
-## MCP 是什麼？
+現在的 `Claude Code` 官方文件，已經把它定位成可以直接讀專案、改檔、跑指令、串接開發工具的 agentic coding tool。[1] 換句話說，很多人以為一定要額外裝一堆東西才算能用，其實不是。
 
-MCP 全稱是 **Model Context Protocol**，這是 Anthropic 推出的一套開放標準。如果說 Skills 是「操作手冊」，那麼 MCP 就是「外部插件」或「工具箱」。
+你光是把 `Claude Code` 裝起來，進到專案目錄，很多基本工作就已經能做：
 
-MCP 採用了客戶端-服務器（Client-Server）架構。Claude 作為客戶端，通過 JSON-RPC 協議與運行在本地或遠端的 MCP 服務器通信。這意味著 MCP 可以做 Skills 做不到的事情：**執行真實的邏輯、訪問實時數據、調用外部 API**。
+- 讀 codebase
+- 找 bug
+- 改檔
+- 跑測試
+- 幫你整理 PR / commit 流程
 
-### MCP 的運作機制
+所以 Skills 跟 MCP 不是拿來補「本體太弱」，而是拿來把它調成比較像你的工作方式。
 
-當你配置了一個 MCP 服務器（例如 GitHub MCP），Claude 就不再只是「知道」怎麼操作 GitHub，而是擁有了「調用 GitHub API」的能力。它可以列出 PR、創建 Issue、甚至讀取特定倉庫的內容。
+## Skills 這東西，我比較把它當成工作習慣
 
-```json
-{
-  "mcpServers": {
-    "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "your_token_here"
-      }
-    }
-  }
-}
-```
+官方現在把這類自訂能力講得很實際：你可以透過自訂指令、記憶檔、規則文件，把你平常的習慣固定下來。[1][3]
 
-{: .prompt-warning }
-MCP 需要運行一個獨立的進程（服務器），因此它的配置比 Skills 複雜一些，且需要消耗額外的系統資源。
+如果用更白話的方式講，Skills 很像這種東西：
 
-## 兩者差異比較
+- 幫 AI 建一份 SOP
+- 告訴它這個專案有什麼規矩
+- 把重複做的流程包成一個可重用的工作方法
 
-雖然兩者都能擴展能力，但我們可以從以下幾個維度來對比：
+例如你可以寫一份 skill，要求它：
 
-| 維度 | Skills | MCP |
-| :--- | :--- | :--- |
-| **本質** | 靜態指令 (Markdown) | 動態工具 (Server) |
-| **複雜度** | 極低，寫字就行 | 中到高，需要編程或配置 |
-| **實時性** | 依賴模型內置知識 | 可獲取實時數據 |
-| **外部訪問** | 無法直接訪問 API | 可自由訪問網絡與系統資源 |
-| **適用場景** | 規範定義、流程指導、特定領域知識 | 數據集成、自動化操作、複雜邏輯執行 |
+1. 先探索再修改
+2. 修改後一定要跑測試
+3. commit message 要照某個格式
+4. 回覆不要太官腔
 
-### 什麼時候該用 Skills？
+它不一定直接去打 API，但會很明顯地改變 Claude 做事的手感。
 
-如果你只是想規範 Claude 的行為，或者教它一些專案特有的術語和流程，Skills 是最佳選擇。比如：
-- 定義專案的代碼風格。
-- 提供特定庫的 API 使用範例。
-- 設定複雜任務的標準作業程序 (SOP)。
+## 我自己最常先寫的，其實都是 Skills
 
-### 什麼時候該用 MCP？
+我覺得 Skills 最有價值的地方，不是功能突然變超多，而是**穩定度會拉起來**。
 
-如果你需要 Claude 與外界互動，或者處理需要精確計算、實時查詢的任務，那就必須用 MCP。比如：
-- 讀取數據庫中的數據。
-- 發送 Slack 訊息或郵件。
-- 搜索 Google 或訪問特定的網頁內容。
+因為很多時候，AI 不是不會寫，而是每次做法不一致。
 
-## 推薦的擴展工具
+今天它可能先跑測試，明天可能直接改；今天它會先看專案規則，明天又忘記。這種時候，你就會發現：與其每次重新講一遍，不如把習慣固定成一份 skill。
 
-在實際開發中，我推薦大家嘗試以下幾個非常實用的 Skills 和 MCP。
+所以第一次碰這類工具，我幾乎都會先勸人從 Skills 開始。門檻低，效果也很直接。
 
-### 推薦的 Skills (來自 oh-my-opencode)
+## 那 MCP 呢
 
-1. **git-master**: 這是我最常用的 Skill。它能確保 Claude 寫出完美的 Commit Message，並且在重構或合併分支時不會亂搞。
-2. **frontend-ui-ux**: 當你需要 Claude 幫你寫前端組件時，這個 Skill 能讓它更注重設計細節，而不僅僅是把功能寫出來。
-3. **playwright**: 專門用於瀏覽器自動化測試。它提供了豐富的指令集，讓 Claude 能更精準地編寫和調試測試腳本。
+`MCP` 全名是 `Model Context Protocol`，這個你可能已經聽到耳朵長繭了。
 
-### 推薦的 MCP 服務器
+但你不用急著背協議細節，只要先記一件事：**它是把外部工具用標準方式接進來**。[2]
 
-1. **filesystem**: 這是最基礎但也最強大的 MCP。它允許 Claude 以更結構化的方式讀寫文件，處理大型專案時比內置的文件操作更可靠。
-2. **GitHub**: 讓 Claude 成為你的 GitHub 助手，處理 PR 和 Issue 變得易如反掌。
-3. **Slack**: 如果你的團隊使用 Slack 溝通，這個 MCP 可以讓 Claude 直接讀取討論上下文，甚至幫你總結會議記錄。
+也就是說，當你裝了一個 GitHub MCP、資料庫 MCP、檔案系統 MCP，Claude 不只是「知道怎麼做」，而是真的有機會去讀資料、打 API、操作服務。
 
-## 結語
+這跟 Skill 最大的差別就在這裡。
 
-總結來說，Skills 和 MCP 並不是競爭關係，而是互補關係。Skills 負責「大腦」的思維邏輯和規範，而 MCP 則負責延伸「雙手」的觸及範圍。
+Skill 是教它規矩。
+MCP 是真的給它手。
 
-對於大多數開發者來說，我建議先從編寫簡單的 Skills 開始，把你的開發習慣和專案規範寫進去。當你發現 Claude 沒辦法獲取某些必要的外部數據時，再考慮引入 MCP。
+## 哪些情況我會先動 Skills
 
-Claude Code 的強大之處就在於這種極高的可擴展性。通過合理配置這兩者，你完全可以打造出一個專屬於你的、最強大的 AI 編程助手。
+下面這幾種情況，我幾乎都先用 Skills 解：
 
----
+### 1. 專案有固定流程
 
-[1]: https://modelcontextprotocol.io/
-[2]: https://www.anthropic.com/news/model-context-protocol
-[3]: https://github.com/modelcontextprotocol/servers
-[4]: https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview
+像是：
+
+- 先 grep 再改
+- 一定要跑 typecheck
+- API route 要放哪裡
+- 測試命名規則
+
+這些都不需要碰外部世界，只要讓 AI 做事更像團隊成員就好。
+
+### 2. 你想把口氣和輸出格式固定住
+
+這點很多人一開始不會想到。
+
+如果你常讓 AI 幫你寫文件、整理變更、產生教學內容，Skills 很適合拿來固定輸出風格。不然它今天像工程師，明天像客服，後天又突然像新聞稿。
+
+### 3. 你想把重複流程包起來
+
+例如「修 bug 時一律先讀 log，再找 call site，最後補測試」，這就很適合寫成 skill。
+
+## 什麼情況下，我就不會再靠 prompt 撐了
+
+### 1. 你真的需要外部資料
+
+例如：
+
+- 讀 GitHub PR
+- 查設計稿
+- 讀 Notion / Slack / Jira
+- 查雲端資源狀態
+
+這些事情不是靠 prompt 可以硬撐過去的。
+
+### 2. 你要的是即時資料，不是模型記憶
+
+像「幫我看目前這個 issue 狀態」這種事，如果沒有 MCP，模型就只能猜。接了 MCP 之後，它才是真的去拿最新資料。[2]
+
+### 3. 你要把 Claude 接到團隊實際流程裡
+
+當你要它不只是幫你寫 code，而是真的幫你碰 GitHub、票務、文件、知識庫，那就進入 MCP 的世界了。
+
+## 兩個會不會一起用？會，而且很常
+
+我的答案很直接：**會，而且這才是自然的用法。**
+
+舉個簡單例子。
+
+你可以有一個 skill，規定它在處理 bug 時的步驟；再搭配一個 GitHub MCP，讓它可以真的去看 issue、PR 和 commit。
+
+這樣它既知道「應該怎麼做」，也真的有東西可以去碰。這時候整體手感才會比較完整。
+
+## 小白怎麼起步，比較不會第一天就亂掉
+
+我自己會走這個順序：
+
+1. 先安裝 Claude Code，確認基本功能正常
+2. 先寫 1 到 2 份最常用的 Skills
+3. 用一週看看哪些地方還需要外部工具
+4. 再接一個最需要的 MCP，不要一口氣裝十個
+
+因為你一開始就把 MCP 裝滿，最後很容易連自己都不知道現在到底是哪一層在壞。
+
+## 我自己現在的選法
+
+如果今天是一個個人專案，我通常會這樣分：
+
+- **Skills**：專案規範、輸出格式、測試流程、寫作習慣
+- **MCP**：GitHub、文件查詢、瀏覽器、自訂資料來源
+
+也就是說，凡是「應該怎麼做」，我盡量寫到 skill。
+
+凡是「要去拿什麼資料、碰什麼系統」，我才放 MCP。
+
+這樣分久了會很清楚，也比較不會混在一起。
+
+這兩個東西最容易被講得很玄，實際上沒有那麼神祕。
+
+如果你現在剛接觸，我覺得先這樣記就夠了：
+
+- Skill 是你寫給 AI 的工作習慣
+- MCP 是你接給 AI 的外部工具
+
+先把這個差別吃透，後面很多東西就不會混在一起。
+
+而且我自己用到現在，最大的感想也不是「哇，功能好多」，而是工具越強，邊界越要講清楚。不然它一下太保守，一下太亂衝，你最後反而更累。
+
+所以如果你問我新手先學哪個，我還是會先說：先 Skill，再 MCP。
+
+## 參考資料
+
+[1]: https://docs.anthropic.com/en/docs/claude-code/overview
+[2]: https://modelcontextprotocol.io/
+[3]: https://docs.anthropic.com/en/docs/claude-code/skills
+[4]: https://docs.anthropic.com/en/docs/claude-code/mcp

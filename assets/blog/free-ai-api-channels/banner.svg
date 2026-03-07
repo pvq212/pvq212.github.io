@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs><linearGradient id="g7" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#111827"/><stop offset="100%" stop-color="#db2777"/></linearGradient></defs>
+  <rect width="1200" height="630" fill="url(#g7)" rx="36"/>
+  <text x="88" y="205" fill="#fdf2f8" font-size="58" font-family="Arial, sans-serif" font-weight="700">比較容易入手的 AI API 管道</text>
+  <text x="88" y="290" fill="#fbcfe8" font-size="32" font-family="Arial, sans-serif">免費、低成本、或至少先玩得起</text>
+</svg>

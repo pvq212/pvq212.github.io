@@ -3,7 +3,7 @@ title: 自建 LocalAI，本地使用 ai 模型 - 文字轉語音
 author: Cooper
 date: 2024-03-11 00:30:00 +0800
 categories: [AI, LocalAI]
-tags: [Docker, AI, LocalAI, tts, 文字轉語音]
+tags: [docker, ai, localai, tts, 文字轉語音]
 ---
 
 ## 前言

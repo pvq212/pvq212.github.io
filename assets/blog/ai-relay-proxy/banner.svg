@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs><linearGradient id="g8" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#111827"/><stop offset="100%" stop-color="#9333ea"/></linearGradient></defs>
+  <rect width="1200" height="630" fill="url(#g8)" rx="36"/>
+  <text x="88" y="205" fill="#faf5ff" font-size="60" font-family="Arial, sans-serif" font-weight="700">AI 中轉站怎麼看</text>
+  <text x="88" y="290" fill="#e9d5ff" font-size="32" font-family="Arial, sans-serif">官方、聚合、面板、逆向，真的差很多</text>
+</svg>

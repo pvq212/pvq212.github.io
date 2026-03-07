@@ -1,130 +1,175 @@
 ---
-title: Modsecurity with CRS，開源的 WAF 防火牆
+title: ModSecurity 搭配 CRS，自己架一層基礎 WAF 夠不夠用？
 author: Cooper
 date: 2024-04-09 00:30:00 +0800
 categories: [Server]
-tags: [WAF, DevOps]
+tags: [waf, devops, modsecurity, crs]
+image:
+  path: /modsecurity-crs/banner.svg
 ---
 
 ## 前言
 
-`ModSecurity`、又稱 `Modsec`，原本是作為 `Apache HTTP Server` 的其中一個模組，後來自己發展為獨立形式的防火牆，結合 `OWASP` 定期會更新的漏洞規則 `CRS`，可以達成 Web 應用的基本防務，但要注意的是 `ModSecurity` 的性能不算好，所以建議要做其他進階設定，可以考慮透過外部 WAF 來處理
+`WAF` 這種東西，很多人都是網站真的被掃、被打、被撞過之後，才開始認真看。
 
-## 部屬
+我自己後來會碰 `ModSecurity + CRS`，也不是因為覺得它有多酷，而是想要先把最基本的防線補起來。
 
-首先簡單說明一下部屬的要求
+這篇我會用比較實際的角度講：如果你是自己管站、自己弄 docker、想先補一層基礎防護，那 `ModSecurity + CRS` 有沒有價值？有。但你也要知道它能做什麼，不能做什麼。
 
-1. 了解 `nginx` 或是 `openresty` 的設置
-2. `docker` 基礎知識
+## 先講結論：它適合拿來補底，不適合拿來神化
 
-沒錯，就是這麼簡單，如果搭配 `openresty` 也可以撰寫 `lua` 腳本配合 redis 去處理快取等功能
+官方現在把 `OWASP CRS Docker` 說得很清楚：它就是一套把 `ModSecurity` 跟 `OWASP CRS` 打包好的 image，讓你可以在 `nginx` 或 `apache` 前面先擋掉一批常見攻擊。[1]
 
-這邊使用 `owasp/modsecurity-crs:openresty-alpine-fat` 這個鏡像，以下是 `docker-compose.yml`
+這個定位我很認同。
 
-backend 這個服務可以是任何後端服務，例如 `go`、`php`、`java` 等
+也就是說，它比較像：
+
+- 基礎 SQL injection / XSS / path traversal 防線
+- 給小型專案或自管服務先補一層
+- 幫你過濾大量很明顯的垃圾流量
+
+但如果你期待靠它一個人解決所有安全問題，那就想太多了。
+
+## 現在官方 image 跟之前我常看到的寫法不太一樣了
+
+這點要先提醒。
+
+現在官方 `modsecurity-crs-docker` repo 已經很明確寫到：
+
+- 主要 image 變體是 `nginx` 跟 `apache`
+- 最新 CRS 目前走到 `4.24.0`
+- nginx 版跑在非特權使用者上
+- 預設埠改成 `8080` / `8443`
+- `OpenResty` 版本已經移除，因為沒有人維護。[1]
+
+所以如果你還看到一些舊文章在教你直接用很老的 openresty 變體，最好多看一眼日期。
+
+## 最簡單的部署方式
+
+如果只是先在一台機器前面掛一層，我反而會建議先走現在官方 image，不要自己一開始就拼大量客製化。
 
 ```yaml
 services:
   backend:
-    build: .
-    restart: unless-stopped
-    volumes:
-      - ./:/app
+    image: nginx:stable
 
-  openresty:
-    image: owasp/modsecurity-crs:openresty-alpine-fat
-    restart: unless-stopped
-    volumes:
-      - .docker/openresty/main.conf:/usr/local/openresty/nginx/conf/conf.d/main.conf
-      - ./:/app
-    sysctls:
-      - net.ipv4.tcp_max_tw_buckets=20000
-      - net.core.somaxconn=65535
-      - net.ipv4.tcp_max_syn_backlog=262144
-    ulimits:
-      nofile:
-        soft: 1024000
-        hard: 1024000
+  waf:
+    image: owasp/modsecurity-crs:nginx
+    environment:
+      BACKEND: http://backend:80
+      PORT: 8080
     ports:
-      - "80:80"
+      - '8080:8080'
 ```
 
-然後是 `main.conf`
+這樣的概念很單純：
 
-```conf
-upstream backend {
-  server backend:80;
-}
+- 後面有你的服務
+- 前面這層先做 WAF
 
-server {
-  listen 80;
-  server_name 127.0.0.1;
+如果之後有需要，再慢慢去調 `paranoia level`、排除規則、log format 和 metrics。
 
-  access_log off;
+## 它現在有什麼值得注意的新點
 
-  root /app/public;
+我看官方 README，近年的幾個實用點其實是這些：
 
-  client_max_body_size 100M;
+### 1. tags 與版本規則更清楚
 
-  location ~ /\.ht {
-    deny all;
-  }
+現在官方把 stable tag / rolling tag 的規則寫得很明白，生產環境比較建議鎖定 stable tag，不要用一直漂的 rolling tag。[1]
 
-  location ~ /\.git {
-    deny all;
-  }
+### 2. health check 有了
 
-  location ^~ / {
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header Host $http_host;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_http_version 1.1;
-    proxy_set_header Connection "";
-    if (!-f $request_filename) {
-      proxy_pass http://backend;
-    }
-  }
-}
-```
+這個我覺得很實用。現在 image 會對 `/healthz` 回 `200`，對容器編排跟監控來說舒服很多。[1]
 
-> 事實上這個鏡像一開始就是啟用 `modsecurity` 模組的，所以當作一般的 nginx conf 撰寫即可
-> {: .prompt-warning }
+### 3. nginx 與 apache 的環境變數整理得更完整
 
-到這一步其實你的網站就有基本的 WAF 防護功能，但如果你對 `ModSecurity` 還有更多細項要調整，如 `detection_paranoia_level`，偵測敏感等級等
-，可以參考[**官方文檔**][1]
+像 `BACKEND`、`PORT`、`PROXY_TIMEOUT`、`REAL_IP_HEADER`、`MODSEC_AUDIT_ENGINE` 這些，現在官方文件都列得很完整，代表你不一定要硬改一堆 conf 才能開始用。[1]
 
-最後測試幾個簡單的項目
+## 它最適合的使用方式
 
-```bash
-# 命令注入攻擊 sh、bash
-curl --location 'http://127.0.0.1/?id=%2Fbin%2Fbash'
-```
+我自己最認同的做法是：
 
-```bash
-# SQL injection id=1 AND 1=1
-curl --location 'http://127.0.0.1/?id=1%20AND%201%3D1'
-```
+1. 先用預設規則跑起來
+2. 觀察哪些請求被擋
+3. 真的有誤殺，再做 exclusion rule
 
-```bash
-# XSS，id='<script>alert(/xss/)</script>'
-curl --location 'http://127.0.0.1/?id=%27%3Cscript%3Ealert(%2Fxss%2F)%3C%2Fscript%3E%27'
-```
+不要一開始就把規則改得太鬆，不然就失去裝這層的意義。
 
-不意外的就算在預設最低的 `detection_paranoia_level` 下，全部被擋下來，回傳 `403`
+如果你是第一次自己架，我其實更建議再保守一點：
 
-```html
-<html>
-  <head>
-    <title>403 Forbidden</title>
-  </head>
-  <body>
-    <center><h1>403 Forbidden</h1></center>
-    <hr />
-    <center>openresty</center>
-  </body>
-</html>
-```
+1. 先用預設規則跑起來
+2. 如果站點比較敏感，先觀察 log，再決定要不要調到更嚴格
+3. 把被擋下來的請求分類：垃圾掃描、真攻擊、還是自己功能被誤殺
 
-搭配上 `Cloudflare` 的機器人對抗模式、進階安全設定，就可以最大的保証應用安全啦
+這樣你會比較有感受到：WAF 不是「有裝就好」，而是要慢慢校正到適合自己站的狀態。
+
+## 新手部署前最容易漏掉的幾件事
+
+### 1. 真實來源 IP 要不要傳進來
+
+如果你前面還有反代、CDN、LB，真實 IP header 沒處理好，log 看起來就會很亂，後面很難判斷到底誰在打你。
+
+### 2. 你的站有沒有富文字、上傳、奇怪 query 參數
+
+這些東西很容易跟 CRS 規則打架。不是不能擋，而是你要提早知道哪些頁面最容易誤殺。
+
+### 3. 你有沒有地方看 audit log
+
+如果今天真的被擋到正常請求，但你沒有 log 可以看，那你只會覺得網站莫名其妙壞掉。
+
+## 你一定要知道的限制
+
+### 限制一：效能和複雜度都不是免費的
+
+多一層 WAF，本來就有成本。
+
+如果你的流量大、規則又重，延遲和維護成本一定會上來。
+
+### 限制二：它擋得掉很多常見攻擊，但擋不掉所有業務邏輯漏洞
+
+像是：
+
+- 權限控管錯誤
+- 越權存取
+- 流程邏輯漏洞
+
+這些不是 CRS 幫你開一個參數就會消失。
+
+### 限制三：誤殺永遠是現實問題
+
+尤其是有比較奇怪參數、上傳、富文字輸入的系統，很容易打到 false positive。
+
+這也是為什麼我說，它比較像「補底」，不是「裝完就高枕無憂」。
+
+## 我會不會搭 Cloudflare 一起用
+
+會，而且我覺得這才合理。
+
+如果你的站真的對外，`Cloudflare` 這種 edge 層防護搭配 origin 前面的 `ModSecurity + CRS`，會比單押一邊更實際。
+
+一層擋在外面，一層貼近 origin，這種組合對小站反而很夠用。
+
+## 部署後我會觀察哪些東西
+
+這段我覺得很重要，因為很多人裝完就不看了。
+
+- 哪些 URI 最常被打
+- 被擋最多的是哪類規則
+- 誤殺大多出現在登入、搜尋、上傳，還是 API
+- 高峰時延遲有沒有明顯變高
+
+你只要願意看一陣子，就會慢慢知道哪些規則值得保留、哪些地方需要排除。
+
+## 我的感想
+
+如果今天你問我：自己架一層 `ModSecurity + CRS` 值不值得？
+
+我會說：**值得，但前提是你把它當基礎防線，而不是萬能盾牌。**
+
+它最有價值的地方，是讓你在還沒上更完整安全體系之前，先把明顯的髒流量和常見攻擊過濾掉。
+
+這件事對自管服務來說，很實際。
+
+## 參考資料
 
 [1]: https://github.com/coreruleset/modsecurity-crs-docker

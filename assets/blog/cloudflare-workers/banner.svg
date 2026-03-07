@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs><linearGradient id="g4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#111827"/><stop offset="100%" stop-color="#f97316"/></linearGradient></defs>
+  <rect width="1200" height="630" fill="url(#g4)" rx="36"/>
+  <text x="88" y="205" fill="#fff7ed" font-size="64" font-family="Arial, sans-serif" font-weight="700">Cloudflare Workers</text>
+  <text x="88" y="290" fill="#fed7aa" font-size="34" font-family="Arial, sans-serif">對個人最友善的邊緣函式之一</text>
+</svg>
